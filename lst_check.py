@@ -1,8 +1,11 @@
+#parameters: two lists
+#operation: compares the two lists
+#return: returns True if more than 3 matches between lists, and false otherwise
 def lists_overlap(list1, list2): #takes 2 lists
     overlap_bool = bool(set(list1) & set(list2))
     overlap_int = len(set(list1) & set(list2))
     
-    if overlap_int > 3:
+    if overlap_int > 2:
         return(True)
     else:
         return(False)

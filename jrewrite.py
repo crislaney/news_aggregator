@@ -14,12 +14,14 @@ def flatten(input):
             ret.append(i)
     return(ret)
 
-
+#parameters: keywords, site entries, and a blank list
+#operation: adds site entries to final list, if they have less than three matches
+#return: list of article entries
 def list_check(keywords1, entries, fin_list):
+    
     clean_list = word_lists(remove_commons(title(entries)))
     keywords = flatten(keywords1)
-    
-    
+
     if len(fin_list) == 10 or len(fin_list) == 15 or len(clean_list) == 0:
         up_values = [keywords, fin_list]
         return(up_values)
@@ -32,6 +34,9 @@ def list_check(keywords1, entries, fin_list):
     elif lists_overlap(keywords, clean_list[0]) == True:
         return(list_check(keywords, entries[1:], fin_list))
 
+
+#parameters: feed from rss reader
+#operation: create
 def first_fif(feed):
     lst = []
     feed1 = feed
@@ -46,7 +51,7 @@ def first_five(feed):
     lst = []
     feed1 = feed
     
-    for i in range(15):
+    for i in range(5):
         lst.append(feed[i])
 
     return(lst)

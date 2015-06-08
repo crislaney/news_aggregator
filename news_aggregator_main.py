@@ -1,21 +1,8 @@
 import feedparser
 from listmaker import *
-from jrewrite import *
-from lst_check import *
 
-#parameters: list of sites, list of sites, keywords
-#operation: cross checks each story with keyword master, getting rid of any repetitions
-#return: list of sites with no repetitions
-def build_top(sites, frst, keywords):
-        
-    for item in sites:
 
-        fin_list = list_check(keywords, item, frst)
-        
-        if item == sites[0]:
-            fin_list[1].append(sites[1][0])
-                       
-    return(fin_list[1])
+
 
 #parameters: a list of sites
 #return: the links to the article
@@ -41,7 +28,84 @@ def prnt_title(sources):
     
     for i in range(len(lst)):
         print("({}) {}".format(i+1, lst[i].title))
-            
+
+#def flatten taken from stack overflow
+def flatten(input):
+    ret = []
+    if not isinstance(input, (list, tuple)):
+        return[input]
+
+    for i in input:
+        if isinstance(i, (list, tuple)):
+            ret.extend(flatten(i))
+        else:
+            ret.append(i)
+    return(ret)
+
+#parameters: list of sites, list of sites, keywords
+#operation: cross checks each story with keyword master, getting rid of any repetitions
+#return: list of sites with no repetitions
+def top_stories(sites, frst, keywords):
+
+    for item in sites:
+
+        fin_list = list_check(keywords, item, frst)
+
+    return(fin_list[1])
+
+#parameters: keywords, site entries, and a blank list
+#operation: adds site entries to final list, if they have less than three matches
+#return: list of article entries
+def list_check(keywords1, entries, fin_list):
+
+    clean_list = word_lists(remove_commons(title(entries)))
+    keywords = flatten(keywords1)
+
+
+    if lists_overlap(keywords, clean_list[0]) == False:
+        fin_list.append(entries[0])
+        keywords.append(clean_list[0])
+        if len(fin_list) == 10 or len(fin_list) == 15 or len(clean_list) == 0:
+            up_values = [keywords, fin_list]
+            return(up_values)
+
+        else:
+            return(list_check(keywords, entries[1:], fin_list))
+
+    elif lists_overlap(keywords, clean_list[0]) == True:
+         if len(fin_list) == 10 or len(fin_list) == 15 or len(clean_list) == 0:
+            up_values = [keywords, fin_list]
+            return(up_values)
+
+         else:
+             return(list_check(keywords, entries[1:], fin_list))
+
+
+#parameters: feed from rss reader
+#operation: create
+def first_fif(feed):
+    lst = []
+    feed1 = feed
+
+    for i in range(10):
+        lst.append(feed[i])
+
+    return(lst)
+
+def first_five(feed):
+
+    lst = []
+    feed1 = feed
+
+    for i in range(5):
+        lst.append(feed[i])
+
+    return(lst)
+
+
+
+
+
 
 
 def main():
@@ -61,7 +125,7 @@ def main():
         fin_list = []
 
         keyword_master = flatten(word_lists(remove_commons(title(bbc5))))
-        fin_list = build_top(sites, bbc5, keyword_master)
+        fin_list = top_stories(sites, bbc5, keyword_master)
         
         prnt_title(fin_list)
         
